@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import division
 import requests
 import logging
@@ -65,7 +66,7 @@ def print_release_stats(project, releases):
     total_downloads = 0
     for release in releases:
         if not latest:
-            latest = {'name': release['name'], 'assets': release['assets']}
+            latest = release
 
         for asset in release['assets']:
             total_downloads += asset['download_count']
@@ -75,12 +76,13 @@ def print_release_stats(project, releases):
         print '\tNo releases.'
         return
 
-    print '\tLatest: %s' % latest['name']
-    if len(latest['assets']) < 1:
-        print '\t\tNo assets associated.'
-    else:
-        for asset in latest['assets']:
-            print '\t\t%s: %d download%s of %s' % (asset['name'], asset['download_count'], '' if asset['download_count'] == 1 else 's', asset['browser_download_url'])
+    if not args.only_totals:
+        print '\tLatest: %s at %s' % (latest['name'], latest['html_url'])
+        if len(latest['assets']) < 1:
+            print '\t\tNo assets associated.'
+        else:
+            for asset in latest['assets']:
+                print '\t\t%s: %d download%s of %s' % (asset['name'], asset['download_count'], '' if asset['download_count'] == 1 else 's', asset['browser_download_url'])
 
     print '\tTotal: %d download%s' % (total_downloads, '' if total_downloads == 1 else 's')
 
